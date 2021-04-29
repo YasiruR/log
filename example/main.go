@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/tryfix/log"
-	"github.com/tryfix/traceable-context"
+	traceable_context "github.com/tryfix/traceable-context"
 )
 
 func main() {
@@ -16,7 +17,9 @@ func main() {
 
 	// log with a traceable context
 	tCtx := traceable_context.WithUUID(uuid.New())
-	ctx, _ := context.WithCancel(tCtx)
+	ctx, cancel := context.WithCancel(tCtx)
+	defer cancel()
+
 	logger := log.Constructor.Log(log.WithColors(true), log.WithLevel(log.TRACE), log.WithFilePath(false), log.Prefixed(`level-1`))
 	logger.ErrorContext(ctx, `message`, `param1`, `param2`)
 	logger.ErrorContext(ctx, `message`)

@@ -3,10 +3,11 @@ package log
 import (
 	"bytes"
 	"context"
-	"github.com/google/uuid"
-	"github.com/tryfix/traceable-context"
 	"log"
 	"testing"
+
+	"github.com/google/uuid"
+	traceable_context "github.com/tryfix/traceable-context"
 )
 
 var byt = bytes.NewBuffer(make([]byte, 100))
@@ -43,7 +44,7 @@ func BenchmarkInfoParams(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			other := pxLg.NewLog(Prefixed(`ss`))
-			go  other.InfoContext(context.Background(), `dd`, 1, 2, 3)
+			go other.InfoContext(context.Background(), `dd`, 1, 2, 3)
 			xx := other.NewLog(Prefixed(`ss`))
 			go xx.InfoContext(context.Background(), `dd`, 1, 2, 3)
 		}
