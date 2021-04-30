@@ -65,5 +65,4 @@ func main() {
 	ctxLogger.ErrorContext(lCtx, `message`)
 	ctxLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
 	ctxLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
-
 }
