@@ -40,4 +40,30 @@ func main() {
 	//// create a logger instance derived from logger
 	//nestedLogger := logger.NewLog(log.WithLevel(log.TRACE), log.Prefixed(`level-2`))
 	//nestedLogger.Error(`error happened`, 22)
+
+	// enable context reading
+	// keys
+	type keyOne string
+	type keyTwo string
+
+	const k1 keyOne = "key1"
+	const k2 keyTwo = "key2"
+
+	// get details from context
+	lCtx := context.Background()
+	lCtx = context.WithValue(lCtx, k1, "context_val_1")
+	lCtx = context.WithValue(lCtx, k2, "context_val_2")
+
+	ctxLogger := log.Constructor.Log(log.WithColors(true),
+		log.WithLevel(log.TRACE),
+		log.WithFilePath(false),
+		log.Prefixed(`context_logger`),
+		log.WithCtxKeys(k1, k2, k1)) // duplicated keys will be removed
+
+	ctxLogger.ErrorContext(lCtx, `message`, `param1`, `param2`)
+	ctxLogger.ErrorContext(lCtx, `message`)
+	ctxLogger.ErrorContext(lCtx, `message`)
+	ctxLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
+	ctxLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
+
 }

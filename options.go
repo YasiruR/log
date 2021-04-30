@@ -17,6 +17,7 @@ type logOptions struct {
 	logLevel  Level
 	filePath  bool
 	fileDepth int
+	ctxKeys   []interface{}
 	writer    io.Writer
 }
 
@@ -99,5 +100,29 @@ func WithColors(enabled bool) Option {
 func WithLevel(level Level) Option {
 	return func(opts *logOptions) {
 		opts.logLevel = level
+	}
+}
+
+// WithCtxKeys sets a set of context keys to be used to extract values from the context and add them to the log entry.
+func WithCtxKeys(keys ...interface{}) Option {
+	return func(opts *logOptions) {
+		// don't proceed when no new keys are provided
+		if len(keys) == 0 {
+			return
+		}
+
+		// remove duplicates
+		allKeys := append(opts.ctxKeys, keys...)
+		m := make(map[interface{}]bool)
+		for _, k := range allKeys {
+			m[k] = true
+		}
+
+		var uniqueKeys []interface{}
+		for mk := range m {
+			uniqueKeys = append(uniqueKeys, mk)
+		}
+
+		opts.ctxKeys = uniqueKeys
 	}
 }

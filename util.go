@@ -31,7 +31,7 @@ func (l *logParser) isLoggable(level Level) bool {
 	return logTypes[level] <= logTypes[l.logLevel]
 }
 
-// colored returns the log level tag in colour.
+// colored colour encodes the log level tag.
 //
 // Whether this returns coloured tags or not depends on the colour configuration of the logger.
 func (l *logParser) colored(level Level) string {
@@ -53,23 +53,6 @@ func (l *logParser) WithPrefix(p string, message interface{}) string {
 	}
 
 	return fmt.Sprintf(`%s] [%+v`, p, message)
-}
-
-// WithPrefix appends the given prefix to the existing prefix.
-func WithPrefix(p string, message interface{}) string {
-	return fmt.Sprintf(`%s] [%+v`, p, message)
-}
-
-// uuidFromContext extracts the uuid from the given context.
-//
-// When a uuid is not attached to the context a newly generated uuid will be sent.
-func uuidFromContext(ctx context.Context) uuid.UUID {
-	uid := tContext.FromContext(ctx)
-	if uid == uuid.Nil {
-		return uuid.New()
-	}
-
-	return uid
 }
 
 // logEntry prints the log entry to the configured io.Writer.
@@ -113,9 +96,46 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 		params = append(params, prms)
 	}
 
+	// add context details
+	if len(l.ctxKeys) > 0 {
+		format += " [%v]"
+		params = append(params, getFromCtx(ctx, l.ctxKeys))
+	}
+
 	if level == FATAL {
 		l.log.Fatalf(format, params...)
 	}
 
 	l.log.Printf(format, params...)
+}
+
+// WithPrefix appends the given prefix to the existing prefix.
+func WithPrefix(p string, message interface{}) string {
+	return fmt.Sprintf(`%s] [%+v`, p, message)
+}
+
+// uuidFromContext extracts the uuid from the given context.
+//
+// When a uuid is not attached to the context a newly generated uuid will be sent.
+func uuidFromContext(ctx context.Context) uuid.UUID {
+	uid := tContext.FromContext(ctx)
+	if uid == uuid.Nil {
+		return uuid.New()
+	}
+
+	return uid
+}
+
+// getFromCtx extracts values from the context that has keys defined in ctxKeys.
+func getFromCtx(ctx context.Context, keys []interface{}) string {
+	var s string
+
+	for _, k := range keys {
+		v := ctx.Value(k)
+		if v != nil {
+			s += ", " + fmt.Sprintf("%s: %+v", k, v)
+		}
+	}
+
+	return s[2:]
 }
