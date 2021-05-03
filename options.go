@@ -39,6 +39,7 @@ func (lOpts *logOptions) copy() *logOptions {
 		colors:    lOpts.colors,
 		logLevel:  lOpts.logLevel,
 		filePath:  lOpts.filePath,
+		ctxKeys:   lOpts.ctxKeys,
 		writer:    lOpts.writer,
 	}
 }
