@@ -97,9 +97,11 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	// add context details
-	if len(l.ctxKeys) > 0 {
-		format += " [%v]"
-		params = append(params, getFromCtx(ctx, l.ctxKeys))
+	if l.ctxExt != nil {
+		if ctxData := l.ctxExt(ctx); len(ctxData) > 0 {
+			format += " %v"
+			params = append(params, ctxData)
+		}
 	}
 
 	if level == FATAL {
@@ -126,16 +128,16 @@ func uuidFromContext(ctx context.Context) uuid.UUID {
 	return uid
 }
 
-// getFromCtx extracts values from the context that has keys defined in ctxKeys.
-func getFromCtx(ctx context.Context, keys []interface{}) string {
-	var s string
+// // getFromCtx extracts values from the context that has keys defined in ctxKeys.
+// func getFromCtx(ctx context.Context, keys []interface{}) string {
+// 	var s string
 
-	for _, k := range keys {
-		v := ctx.Value(k)
-		if v != nil {
-			s += ", " + fmt.Sprintf("%s: %+v", k, v)
-		}
-	}
+// 	for _, k := range keys {
+// 		v := ctx.Value(k)
+// 		if v != nil {
+// 			s += ", " + fmt.Sprintf("%s: %+v", k, v)
+// 		}
+// 	}
 
-	return s[2:]
-}
+// 	return s[2:]
+// }

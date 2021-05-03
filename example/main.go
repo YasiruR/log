@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/tryfix/log"
@@ -58,11 +59,31 @@ func main() {
 		log.WithLevel(log.TRACE),
 		log.WithFilePath(false),
 		log.Prefixed(`context_logger`),
-		log.WithCtxKeys(k1, k2, k1)) // duplicated keys will be removed
+		log.WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{
+				fmt.Sprintf("%s: %+v", k1, ctx.Value(k1)),
+			}
+		}),
+	)
 
 	ctxLogger.ErrorContext(lCtx, `message`, `param1`, `param2`)
 	ctxLogger.ErrorContext(lCtx, `message`)
 	ctxLogger.ErrorContext(lCtx, `message`)
 	ctxLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
 	ctxLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
+
+	// child logger with additional context extraction functionality
+	ctxChildLogger := ctxLogger.NewLog(log.Prefixed(`context_child_logger`),
+		log.WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{
+				fmt.Sprintf("%s: %+v", k2, ctx.Value(k2)),
+			}
+		}),
+	)
+
+	ctxChildLogger.ErrorContext(lCtx, `message`, `param1`, `param2`)
+	ctxChildLogger.ErrorContext(lCtx, `message`)
+	ctxChildLogger.ErrorContext(lCtx, `message`)
+	ctxChildLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
+	ctxChildLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 }

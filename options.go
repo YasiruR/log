@@ -1,6 +1,7 @@
 package log
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -17,7 +18,7 @@ type logOptions struct {
 	logLevel  Level
 	filePath  bool
 	fileDepth int
-	ctxKeys   []interface{}
+	ctxExt    func(ctx context.Context) []interface{}
 	writer    io.Writer
 }
 
@@ -39,7 +40,7 @@ func (lOpts *logOptions) copy() *logOptions {
 		colors:    lOpts.colors,
 		logLevel:  lOpts.logLevel,
 		filePath:  lOpts.filePath,
-		ctxKeys:   lOpts.ctxKeys,
+		ctxExt:    lOpts.ctxExt,
 		writer:    lOpts.writer,
 	}
 }
@@ -104,26 +105,16 @@ func WithLevel(level Level) Option {
 	}
 }
 
-// WithCtxKeys sets a set of context keys to be used to extract values from the context and add them to the log entry.
-func WithCtxKeys(keys ...interface{}) Option {
+// WithCtxExtractor allows setting up of a function to extract values from the context.
+func WithCtxExtractor(fn func(ctx context.Context) []interface{}) Option {
 	return func(opts *logOptions) {
-		// don't proceed when no new keys are provided
-		if len(keys) == 0 {
-			return
-		}
+		parent := opts.ctxExt
+		opts.ctxExt = func(ctx context.Context) []interface{} {
+			if parent != nil {
+				return append(parent(ctx), fn(ctx)...)
+			}
 
-		// remove duplicates
-		allKeys := append(opts.ctxKeys, keys...)
-		m := make(map[interface{}]bool)
-		for _, k := range allKeys {
-			m[k] = true
+			return fn(ctx)
 		}
-
-		var uniqueKeys []interface{}
-		for mk := range m {
-			uniqueKeys = append(uniqueKeys, mk)
-		}
-
-		opts.ctxKeys = uniqueKeys
 	}
 }
