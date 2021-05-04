@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/tryfix/log"
-	"github.com/tryfix/traceable-context"
+	traceable_context "github.com/tryfix/traceable-context"
 )
 
 func main() {
@@ -40,4 +42,48 @@ func main() {
 	//nestedLogger := logger.NewLog(log.WithLevel(log.TRACE), log.Prefixed(`level-2`))
 	//nestedLogger.Error(`error happened`, 22)
 
+	// enable context reading
+	// keys
+	type keyOne string
+	type keyTwo string
+
+	const k1 keyOne = "key1"
+	const k2 keyTwo = "key2"
+
+	// get details from context
+	lCtx := context.Background()
+	lCtx = context.WithValue(lCtx, k1, "context_val_1")
+	lCtx = context.WithValue(lCtx, k2, "context_val_2")
+
+	ctxLogger := log.Constructor.Log(log.WithColors(true),
+		log.WithLevel(log.TRACE),
+		log.WithFilePath(false),
+		log.Prefixed(`context_logger`),
+		log.WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{
+				fmt.Sprintf("%s: %+v", k1, ctx.Value(k1)),
+			}
+		}),
+	)
+
+	ctxLogger.ErrorContext(lCtx, `message`, `param1`, `param2`)
+	ctxLogger.ErrorContext(lCtx, `message`)
+	ctxLogger.ErrorContext(lCtx, `message`)
+	ctxLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
+	ctxLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
+
+	// child logger with additional context extraction functionality
+	ctxChildLogger := ctxLogger.NewLog(log.Prefixed(`context_child_logger`),
+		log.WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{
+				fmt.Sprintf("%s: %+v", k2, ctx.Value(k2)),
+			}
+		}),
+	)
+
+	ctxChildLogger.ErrorContext(lCtx, `message`, `param1`, `param2`)
+	ctxChildLogger.ErrorContext(lCtx, `message`)
+	ctxChildLogger.ErrorContext(lCtx, `message`)
+	ctxChildLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
+	ctxChildLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 }

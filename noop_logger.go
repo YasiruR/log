@@ -43,6 +43,8 @@ func (l *prefixedNoopLogger) DebugContext(ctx context.Context, prefix string, me
 }
 func (l *prefixedNoopLogger) TraceContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
 }
+func (l *prefixedNoopLogger) FatalContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
+}
 func (l *prefixedNoopLogger) Error(prefix string, message interface{}, params ...interface{})   {}
 func (l *prefixedNoopLogger) Warn(prefix string, message interface{}, params ...interface{})    {}
 func (l *prefixedNoopLogger) Info(prefix string, message interface{}, params ...interface{})    {}
@@ -50,13 +52,10 @@ func (l *prefixedNoopLogger) Debug(prefix string, message interface{}, params ..
 func (l *prefixedNoopLogger) Trace(prefix string, message interface{}, params ...interface{})   {}
 func (l *prefixedNoopLogger) Fatal(prefix string, message interface{}, params ...interface{})   {}
 func (l *prefixedNoopLogger) Fatalln(prefix string, message interface{}, params ...interface{}) {}
-func (l *prefixedNoopLogger) FatalContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-}
-func (l *prefixedNoopLogger) Print(v ...interface{})                 {}
-func (l *prefixedNoopLogger) Printf(format string, v ...interface{}) {}
-func (l *prefixedNoopLogger) Println(v ...interface{})               {}
-
-func (l *prefixedNoopLogger) NewLog(opts ...Option) Logger { return NewNoopLogger() }
+func (l *prefixedNoopLogger) Print(v ...interface{})                                            {}
+func (l *prefixedNoopLogger) Printf(format string, v ...interface{})                            {}
+func (l *prefixedNoopLogger) Println(v ...interface{})                                          {}
+func (l *prefixedNoopLogger) NewLog(opts ...Option) Logger                                      { return NewNoopLogger() }
 func (l *prefixedNoopLogger) NewPrefixedLog(opts ...Option) PrefixedLogger {
 	return NewPrefixedNoopLogger()
 }
