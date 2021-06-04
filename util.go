@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
 	tContext "github.com/tryfix/traceable-context"
 )
 
@@ -17,9 +18,9 @@ func NewLog(options ...Option) Log {
 
 	switch opts.output {
 	case OutJson:
-		return &textLogImpl{
+		return &jsonLogImpl{
 			logOptions: opts,
-			log:        log.New(opts.writer, ``, log.LstdFlags|log.Lmicroseconds),
+			log:        zerolog.New(opts.writer).With().Timestamp().Logger().Level(zerologLevel(opts.logLevel)),
 		}
 	default:
 		return &textLogImpl{
@@ -44,4 +45,24 @@ func uuidFromContext(ctx context.Context) uuid.UUID {
 	}
 
 	return uid
+}
+
+// zerologLevel convers the config log level to corresponding zerolog log level.
+func zerologLevel(lvl Level) zerolog.Level {
+	switch lvl {
+	case FATAL:
+		return zerolog.FatalLevel
+	case ERROR:
+		return zerolog.ErrorLevel
+	case WARN:
+		return zerolog.WarnLevel
+	case INFO:
+		return zerolog.InfoLevel
+	case DEBUG:
+		return zerolog.DebugLevel
+	case TRACE:
+		return zerolog.TraceLevel
+	default:
+		return zerolog.ErrorLevel
+	}
 }
