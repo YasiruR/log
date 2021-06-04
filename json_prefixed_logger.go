@@ -40,67 +40,80 @@ func (l *jsonPrefixedLogger) NewPrefixedLog(opts ...Option) PrefixedLogger {
 
 // Error logs with ERROR level with prefix.
 func (l *jsonPrefixedLogger) Error(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Error().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Error(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Warn logs with WARN level with prefix.
 func (l *jsonPrefixedLogger) Warn(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Warn().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Warn(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Info logs with INFO level with prefix.
 func (l *jsonPrefixedLogger) Info(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Info().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Info(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Debug logs with DEBUG level with prefix.
 func (l *jsonPrefixedLogger) Debug(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Debug().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Debug(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Trace logs with TRACE level with prefix.
 func (l *jsonPrefixedLogger) Trace(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Trace().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Trace(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Fatal logs with FATAL level with prefix.
 func (l *jsonPrefixedLogger) Fatal(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Fatal().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Fatal(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Fatalln logs with FATAL level with prefix.
 func (l *jsonPrefixedLogger) Fatalln(prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Fatal().Msgf("%s", message)
+	l.jsonLogParser.parse(context.Background(), l.jsonLogParser.log.Fatal(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // ErrorContext logs with ERROR level with context and prefix.
 func (l *jsonPrefixedLogger) ErrorContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Error().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Error(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // WarnContext logs with WARN level with context and prefix.
 func (l *jsonPrefixedLogger) WarnContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Warn().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Warn(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // InfoContext logs with INFO level with context and prefix.
 func (l *jsonPrefixedLogger) InfoContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Info().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Info(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // DebugContext logs with DEBUG level with context and prefix.
 func (l *jsonPrefixedLogger) DebugContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Debug().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Debug(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // TraceContext logs with TRACE level with context and prefix.
 func (l *jsonPrefixedLogger) TraceContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Trace().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Trace(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // FatalContext logs with FATAL level with context and prefix.
 func (l *jsonPrefixedLogger) FatalContext(ctx context.Context, prefix string, message interface{}, params ...interface{}) {
-	l.jsonLogParser.log.Fatal().Msgf("%s", message)
+	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Fatal(), params...).
+		Str("prefix", prefix).Msgf("%s", message)
 }
 
 // Print logs with INFO level.

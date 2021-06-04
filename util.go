@@ -20,7 +20,10 @@ func NewLog(options ...Option) Log {
 	case OutJson:
 		return &jsonLogImpl{
 			logOptions: opts,
-			log:        zerolog.New(opts.writer).With().Timestamp().Logger().Level(zerologLevel(opts.logLevel)),
+			log: zerolog.New(opts.writer).With().
+				Timestamp().
+				CallerWithSkipFrameCount(3).
+				Logger().Level(zerologLevel(opts.logLevel)),
 		}
 	default:
 		return &textLogImpl{
