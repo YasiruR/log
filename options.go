@@ -20,6 +20,7 @@ type logOptions struct {
 	fileDepth int
 	ctxExt    func(ctx context.Context) []interface{}
 	writer    io.Writer
+	output    Output
 }
 
 // applyDefault applies a set of predefined configurations to the logger.
@@ -29,6 +30,7 @@ func (lOpts *logOptions) applyDefault() {
 	lOpts.logLevel = TRACE
 	lOpts.filePath = true
 	lOpts.writer = os.Stdout
+	lOpts.output = OutText
 }
 
 // copy returns a copy of existing configuration values of the logger.
@@ -67,6 +69,13 @@ func FileDepth(d int) Option {
 func WithStdOut(w io.Writer) Option {
 	return func(opts *logOptions) {
 		opts.writer = w
+	}
+}
+
+// WithOutput sets the output format for log entries.
+func WithOutput(o Output) Option {
+	return func(opts *logOptions) {
+		opts.output = o
 	}
 }
 
