@@ -20,10 +20,7 @@ func NewLog(options ...Option) Log {
 	case OutJson:
 		return &jsonLogImpl{
 			logOptions: opts,
-			log: zerolog.New(opts.writer).With().
-				Timestamp().
-				CallerWithSkipFrameCount(3).
-				Logger().Level(zerologLevel(opts.logLevel)),
+			log:        newZerolog(opts),
 		}
 	default:
 		return &textLogImpl{
@@ -68,4 +65,15 @@ func zerologLevel(lvl Level) zerolog.Level {
 	default:
 		return zerolog.ErrorLevel
 	}
+}
+
+// newZerolog creates a new zerolog instance using given configs.
+func newZerolog(opts *logOptions) zerolog.Logger {
+	z := zerolog.New(opts.writer).With().Timestamp()
+
+	if opts.filePath {
+		z = z.CallerWithSkipFrameCount(3)
+	}
+
+	return z.Logger().Level(zerologLevel(opts.logLevel))
 }

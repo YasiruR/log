@@ -83,7 +83,7 @@ func main() {
 	// ctxChildLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 
 	// json logger
-	jsonLogConstructor := log.NewLog(log.WithOutput(log.OutJson))
+	jsonLogConstructor := log.NewLog(log.WithOutput(log.OutJson), log.WithFilePath(true))
 	jsonLogger := jsonLogConstructor.Log()
 	jsonLogger.Error("error message")
 }

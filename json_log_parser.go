@@ -30,7 +30,7 @@ func (l *jsonLogParser) withUUID(ctx context.Context, event *zerolog.Event) *zer
 func (l *jsonLogParser) withExtractedCtx(ctx context.Context, event *zerolog.Event) *zerolog.Event {
 	if l.ctxExt != nil {
 		if ctxData := l.ctxExt(ctx); len(ctxData) > 0 {
-			return event.Str("context", "placeholder")
+			return event.Str("ctx", "placeholder")
 		}
 	}
 
