@@ -73,7 +73,7 @@ func newZerolog(opts *logOptions) zerolog.Logger {
 	z := zerolog.New(opts.writer).With().Timestamp()
 
 	if opts.filePath {
-		z = z.CallerWithSkipFrameCount(3)
+		z = z.CallerWithSkipFrameCount(opts.fileDepth)
 	}
 
 	return z.Logger().Level(zerologLevel(opts.logLevel))

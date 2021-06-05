@@ -18,7 +18,7 @@ func (l *jsonPrefixedLogger) NewLog(opts ...Option) Logger {
 	return &jsonLogger{
 		jsonLogParser: jsonLogParser{
 			logOptions: defaults,
-			log:        l.log,
+			log:        newZerolog(defaults),
 		},
 	}
 }
@@ -33,7 +33,7 @@ func (l *jsonPrefixedLogger) NewPrefixedLog(opts ...Option) PrefixedLogger {
 	return &jsonPrefixedLogger{
 		jsonLogParser: jsonLogParser{
 			logOptions: defaults,
-			log:        l.log,
+			log:        newZerolog(defaults),
 		},
 	}
 }
