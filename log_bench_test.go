@@ -1,53 +1,182 @@
 package log
 
 import (
-	"bytes"
 	"context"
+	"io/ioutil"
 	"log"
 	"testing"
-
-	"github.com/google/uuid"
-	traceable_context "github.com/tryfix/traceable-context"
 )
 
-var byt = bytes.NewBuffer(make([]byte, 100))
-var lg = NewLog(WithLevel(INFO), WithStdOut(byt), WithFilePath(true), WithColors(true))
-var pxLg = lg.Log()
-var native = log.New(byt, `test`, log.Lmicroseconds)
+const testLog = `test log entry, test log entry, test log entry, test log entry, test log entry`
 
-var testCtx = traceable_context.WithUUID(uuid.New())
-
-func BenchmarkNative(b *testing.B) {
+func BenchmarkGoNative(b *testing.B) {
+	lg := log.New(ioutil.Discard, `test-logger.path`, log.Lmicroseconds)
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			native.Println(`dd`)
+			lg.Println(testLog)
 		}
 	})
 }
 
-func BenchmarkInfo(b *testing.B) {
+func BenchmarkTextLogInfo(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			pxLg.Info(`dd`)
+			lg.Info(testLog)
 		}
 	})
 }
 
-func BenchmarkInfoContext(b *testing.B) {
+func BenchmarkTextLogInfoFilePath(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(true),
+		WithColors(false)).Log()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			pxLg.InfoContext(testCtx, `dd`)
+			lg.Info(testLog)
 		}
 	})
 }
 
-func BenchmarkInfoParams(b *testing.B) {
+func BenchmarkTextInfoContext(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	ctx := context.Background()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			other := pxLg.NewLog(Prefixed(`ss`))
-			go other.InfoContext(context.Background(), `dd`, 1, 2, 3)
-			xx := other.NewLog(Prefixed(`ss`))
-			go xx.InfoContext(context.Background(), `dd`, 1, 2, 3)
+			lg.InfoContext(ctx, testLog)
+		}
+	})
+}
+
+func BenchmarkTextInfoContextExt(b *testing.B) {
+	ctx1 := context.WithValue(context.Background(), `ctx1`, `ctx one value`)
+	ctx2 := context.WithValue(ctx1, `ctx2`, `ctx two value`)
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{ctx.Value(`ctx1`), ctx.Value(`ctx2`)}
+		}),
+		WithColors(false)).Log()
+
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.InfoContext(ctx2, testLog)
+		}
+	})
+}
+
+func BenchmarkTextInfoParams(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	ctx := context.Background()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.InfoContext(ctx, testLog,
+				`parm1`, `parm2`, `parm3`, `parm4`)
+		}
+	})
+}
+
+func BenchmarkJsonLogInfo(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithOutput(OutJson),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.Info(testLog)
+		}
+	})
+}
+
+func BenchmarkJsonLogInfoFilePath(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithOutput(OutJson),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(true),
+		WithColors(false)).Log()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.Info(testLog)
+		}
+	})
+}
+
+func BenchmarkJsonInfoContext(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithOutput(OutJson),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	ctx := context.Background()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.InfoContext(ctx, testLog)
+		}
+	})
+}
+
+func BenchmarkJsonInfoContextExt(b *testing.B) {
+	ctx1 := context.WithValue(context.Background(), `ctx1`, `ctx one value`)
+	ctx2 := context.WithValue(ctx1, `ctx2`, `ctx two value`)
+	lg := NewLog(
+		WithLevel(INFO),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithOutput(OutJson),
+		WithCtxExtractor(func(ctx context.Context) []interface{} {
+			return []interface{}{ctx.Value(`ctx1`), ctx.Value(`ctx2`)}
+		}),
+		WithColors(false)).Log()
+
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.InfoContext(ctx2, testLog)
+		}
+	})
+}
+
+func BenchmarkJsonInfoParams(b *testing.B) {
+	lg := NewLog(
+		WithLevel(INFO),
+		WithOutput(OutJson),
+		WithStdOut(ioutil.Discard),
+		WithFilePath(false),
+		WithColors(false)).Log()
+	ctx := context.Background()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			lg.InfoContext(ctx, testLog, `parm1`, `parm2`, `parm3`, `parm4`)
 		}
 	})
 }
