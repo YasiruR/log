@@ -24,6 +24,7 @@ func BenchmarkNative(b *testing.B) {
 		}
 	})
 }
+
 func BenchmarkInfo(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {

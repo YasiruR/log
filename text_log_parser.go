@@ -11,7 +11,6 @@ import (
 type logMessage struct {
 	typ     string
 	message interface{}
-	uuid    string
 	file    string
 	line    int
 }
@@ -58,18 +57,15 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	var params []interface{}
-	format := "%s [%s] [%+v]"
-	// logLevel := string(level)
+	format := "%s [%+v]"
 	logLevel := l.colored(level)
-	uid := uuidFromContext(ctx).String()
 
 	logMsg := &logMessage{
 		typ:     logLevel,
 		message: message,
-		uuid:    uid,
 	}
 
-	params = append(params, logLevel, uid, fmt.Sprintf(`%s`, message))
+	params = append(params, logLevel, fmt.Sprintf(`%s`, message))
 
 	funcName := ``
 	file := `<Unknown>`
@@ -79,12 +75,12 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 		funcName = runtime.FuncForPC(pc).Name()
 	}
 
-	format = "%s [%s] [%+v" + fmt.Sprintf(` on func %s`, funcName) + "]"
+	format = "%s [%+v" + fmt.Sprintf(` on func %s`, funcName) + "]"
 
 	if l.filePath {
 		logMsg.file = file
 		logMsg.line = line
-		format = "%s [%s] [%+v" + fmt.Sprintf(` on func %s on %s line %d`, funcName, file, line) + "]"
+		format = "%s [%+v" + fmt.Sprintf(` on func %s on %s line %d`, funcName, file, line) + "]"
 	}
 
 	if len(prms) > 0 {
