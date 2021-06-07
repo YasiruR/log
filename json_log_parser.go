@@ -14,7 +14,6 @@ type jsonLogParser struct {
 
 // parse parses all additional data.
 func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix string, params ...interface{}) *zerolog.Event {
-	event = l.withUUID(ctx, event)
 	event = l.withPrefix(event, prefix)
 	event = l.withExtractedCtx(ctx, event)
 	event = l.withParams(event, params...)
@@ -39,11 +38,6 @@ func (l *jsonLogParser) withPrefix(event *zerolog.Event, prefix string) *zerolog
 	}
 
 	return event
-}
-
-// withUUID attaches the uuid from context to event.
-func (l *jsonLogParser) withUUID(ctx context.Context, event *zerolog.Event) *zerolog.Event {
-	return event.Str("uuid", uuidFromContext(ctx).String())
 }
 
 // withExtractedCtx adds the extacted context values to the event.

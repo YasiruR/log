@@ -36,6 +36,7 @@ func WithPrefix(p string, message interface{}) string {
 	return fmt.Sprintf(`%s] [%+v`, p, message)
 }
 
+// TODO: change this to be a helper function that can be used with contxt extractor
 // uuidFromContext extracts the uuid from the given context.
 //
 // When a uuid is not attached to the context a newly generated uuid will be sent.
