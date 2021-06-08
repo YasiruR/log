@@ -28,7 +28,7 @@ func (lOpts *logOptions) applyDefault() {
 	lOpts.fileDepth = 2
 	lOpts.colors = true
 	lOpts.logLevel = TRACE
-	lOpts.filePath = true
+	lOpts.filePath = false
 	lOpts.writer = os.Stdout
 	lOpts.output = OutText
 }
