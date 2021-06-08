@@ -1,13 +1,10 @@
 package log
 
 import (
-	"context"
 	"fmt"
 	"log"
 
-	"github.com/google/uuid"
 	"github.com/rs/zerolog"
-	tContext "github.com/tryfix/traceable-context"
 )
 
 // NewLog creates a new instance of the logger.
@@ -34,19 +31,6 @@ func NewLog(options ...Option) Log {
 // WithPrefix appends the given prefix to the existing prefix.
 func WithPrefix(p string, message interface{}) string {
 	return fmt.Sprintf(`%s] [%+v`, p, message)
-}
-
-// TODO: change this to be a helper function that can be used with contxt extractor
-// uuidFromContext extracts the uuid from the given context.
-//
-// When a uuid is not attached to the context a newly generated uuid will be sent.
-func uuidFromContext(ctx context.Context) uuid.UUID {
-	uid := tContext.FromContext(ctx)
-	if uid == uuid.Nil {
-		return uuid.New()
-	}
-
-	return uid
 }
 
 // zerologLevel convers the config log level to corresponding zerolog log level.
