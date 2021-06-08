@@ -105,15 +105,15 @@ func (l *jsonPrefixedLogger) FatalContext(ctx context.Context, prefix string, me
 
 // Print logs with INFO level.
 func (l *jsonPrefixedLogger) Print(v ...interface{}) {
-	l.jsonLogParser.log.Print(v...)
+	l.jsonLogParser.print(v...)
 }
 
 // Printf logs with INFO level.
 func (l *jsonPrefixedLogger) Printf(format string, v ...interface{}) {
-	l.jsonLogParser.log.Printf(format, v...)
+	l.jsonLogParser.printf(format, v...)
 }
 
 // Println logs with INFO level.
 func (l *jsonPrefixedLogger) Println(v ...interface{}) {
-	l.jsonLogParser.log.Print(v...)
+	l.jsonLogParser.println(v...)
 }

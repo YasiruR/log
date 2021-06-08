@@ -65,7 +65,7 @@ func zerologLevel(lvl Level) zerolog.Level {
 	case TRACE:
 		return zerolog.TraceLevel
 	default:
-		return zerolog.ErrorLevel
+		return zerolog.TraceLevel
 	}
 }
 

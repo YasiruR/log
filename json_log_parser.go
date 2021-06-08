@@ -12,6 +12,21 @@ type jsonLogParser struct {
 	log zerolog.Logger
 }
 
+func (l *jsonLogParser) print(v ...interface{}) {
+	l.log.Print(v...)
+}
+
+// parse parses all additional data.
+func (l *jsonLogParser) printf(format string, v ...interface{}) {
+	l.log.Printf(format, v...)
+}
+
+// parse parses all additional data.
+func (l *jsonLogParser) println(v ...interface{}) {
+	l.log.Print(v...)
+	l.log.Print("\n")
+}
+
 // parse parses all additional data.
 func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix string, params ...interface{}) *zerolog.Event {
 	event = l.withPrefix(event, prefix)
@@ -23,7 +38,7 @@ func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix 
 
 // withLoggerPrefix attaches the logger prefix to the event.
 func (l *jsonLogParser) withPrefix(event *zerolog.Event, prefix string) *zerolog.Event {
-	key := "prefix"
+	const key string = "prefix"
 
 	if l.prefix != "" {
 		if prefix != "" {

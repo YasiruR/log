@@ -105,15 +105,15 @@ func (l *jsonLogger) FatalContext(ctx context.Context, message interface{}, para
 
 // Print logs without a level.
 func (l *jsonLogger) Print(v ...interface{}) {
-	l.jsonLogParser.log.Print(v...)
+	l.jsonLogParser.print(v...)
 }
 
 // Printf logs without a level.
 func (l *jsonLogger) Printf(format string, v ...interface{}) {
-	l.jsonLogParser.log.Printf(format, v...)
+	l.jsonLogParser.printf(format, v...)
 }
 
 // Println logs without a level.
 func (l *jsonLogger) Println(v ...interface{}) {
-	l.jsonLogParser.log.Print(v...)
+	l.jsonLogParser.println(v...)
 }
