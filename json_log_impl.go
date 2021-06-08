@@ -9,6 +9,7 @@ type jsonLogImpl struct {
 	log zerolog.Logger
 }
 
+// newJsonLogImpl creates a new instance of json log implementation.
 func newJsonLogImpl(opts *logOptions) Log {
 	return &jsonLogImpl{
 		logOptions: opts,
@@ -16,6 +17,7 @@ func newJsonLogImpl(opts *logOptions) Log {
 	}
 }
 
+// Log creates a new logger by extending the json logger implementation.
 func (l *jsonLogImpl) Log(options ...Option) Logger {
 	opts := l.logOptions.copy()
 	opts.apply(options...)
@@ -23,10 +25,13 @@ func (l *jsonLogImpl) Log(options ...Option) Logger {
 	return newJsonLogger(opts)
 }
 
+// SimpleLog creates a new simple logger by extending the json logger implementation.
+// *Note: not implemented, will panic.
 func (*jsonLogImpl) SimpleLog() SimpleLogger {
 	panic(`implement me`)
 }
 
+// PrefixedLog creates a new prefixed logger by extending the text logger implementation.
 func (l *jsonLogImpl) PrefixedLog(options ...Option) PrefixedLogger {
 	opts := l.logOptions.copy()
 	opts.apply(options...)

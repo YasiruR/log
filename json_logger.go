@@ -11,10 +11,7 @@ type jsonLogger struct {
 // newJsonLogger creates a new instance of json logger.
 func newJsonLogger(o *logOptions) Logger {
 	return &jsonLogger{
-		jsonLogParser: jsonLogParser{
-			logOptions: o,
-			log:        newZerolog(o),
-		},
+		jsonLogParser: newJsonLogParser(o),
 	}
 }
 

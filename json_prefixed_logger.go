@@ -11,10 +11,7 @@ type jsonPrefixedLogger struct {
 // newPrefixedJsonLogger creates a new instance of prefixed json logger.
 func newPrefixedJsonLogger(o *logOptions) PrefixedLogger {
 	return &jsonPrefixedLogger{
-		jsonLogParser: jsonLogParser{
-			logOptions: o,
-			log:        newZerolog(o),
-		},
+		jsonLogParser: newJsonLogParser(o),
 	}
 }
 

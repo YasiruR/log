@@ -12,6 +12,13 @@ type jsonLogParser struct {
 	log zerolog.Logger
 }
 
+func newJsonLogParser(o *logOptions) jsonLogParser {
+	return jsonLogParser{
+		logOptions: o,
+		log:        newZerolog(o),
+	}
+}
+
 func (l *jsonLogParser) print(v ...interface{}) {
 	l.log.Print(v...)
 }
