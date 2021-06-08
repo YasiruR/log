@@ -100,17 +100,17 @@ func (l *jsonPrefixedLogger) FatalContext(ctx context.Context, prefix string, me
 	l.jsonLogParser.parse(ctx, l.jsonLogParser.log.Fatal(), prefix, params...).Msgf("%s", message)
 }
 
-// Print logs with INFO level.
+// Print logs with DEBUG level.
 func (l *jsonPrefixedLogger) Print(v ...interface{}) {
 	l.jsonLogParser.print(v...)
 }
 
-// Printf logs with INFO level.
+// Printf logs with DEBUG level.
 func (l *jsonPrefixedLogger) Printf(format string, v ...interface{}) {
 	l.jsonLogParser.printf(format, v...)
 }
 
-// Println logs with INFO level.
+// Println logs with DEBUG level.
 func (l *jsonPrefixedLogger) Println(v ...interface{}) {
-	l.jsonLogParser.println(v...)
+	l.jsonLogParser.print(v...)
 }

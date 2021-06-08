@@ -12,6 +12,7 @@ type jsonLogParser struct {
 	log zerolog.Logger
 }
 
+// newJsonLogParser creates a new instance of the json parser.
 func newJsonLogParser(o *logOptions) jsonLogParser {
 	return jsonLogParser{
 		logOptions: o,
@@ -19,19 +20,14 @@ func newJsonLogParser(o *logOptions) jsonLogParser {
 	}
 }
 
+// print attaches concatenated v to the message field of the json as a single string.
 func (l *jsonLogParser) print(v ...interface{}) {
 	l.log.Print(v...)
 }
 
-// parse parses all additional data.
+// printf attaches the format parsed string to the message field of the json.
 func (l *jsonLogParser) printf(format string, v ...interface{}) {
 	l.log.Printf(format, v...)
-}
-
-// parse parses all additional data.
-func (l *jsonLogParser) println(v ...interface{}) {
-	l.log.Print(v...)
-	l.log.Print("\n")
 }
 
 // parse parses all additional data.

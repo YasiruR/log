@@ -112,5 +112,5 @@ func (l *jsonLogger) Printf(format string, v ...interface{}) {
 
 // Println logs without a level.
 func (l *jsonLogger) Println(v ...interface{}) {
-	l.jsonLogParser.println(v...)
+	l.jsonLogParser.print(v...)
 }
