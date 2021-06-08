@@ -34,17 +34,17 @@ func BenchmarkJsonLoggers(b *testing.B) {
 
 	configs := []config{
 		{name: "Trace", cfs: []log.Option{log.WithLevel(log.TRACE)}},
-		// {name: "Debug", cfs: []log.Option{log.WithLevel(log.DEBUG)}},
-		// {name: "Info", cfs: []log.Option{log.WithLevel(log.INFO)}},
-		// {name: "Warn", cfs: []log.Option{log.WithLevel(log.WARN)}},
-		// {name: "Error", cfs: []log.Option{log.WithLevel(log.ERROR)}},
-		// {name: "Fatal", cfs: []log.Option{log.WithLevel(log.FATAL)}},
-		// {name: "TraceFilepath", cfs: []log.Option{log.WithLevel(log.TRACE), log.WithFilePath(true)}},
-		// {name: "DebugFilepath", cfs: []log.Option{log.WithLevel(log.DEBUG), log.WithFilePath(true)}},
-		// {name: "InfoFilepath", cfs: []log.Option{log.WithLevel(log.INFO), log.WithFilePath(true)}},
-		// {name: "WarnFilepath", cfs: []log.Option{log.WithLevel(log.WARN), log.WithFilePath(true)}},
-		// {name: "ErrorFilepath", cfs: []log.Option{log.WithLevel(log.ERROR), log.WithFilePath(true)}},
-		// {name: "FatalFilepath", cfs: []log.Option{log.WithLevel(log.FATAL), log.WithFilePath(true)}},
+		{name: "Debug", cfs: []log.Option{log.WithLevel(log.DEBUG)}},
+		{name: "Info", cfs: []log.Option{log.WithLevel(log.INFO)}},
+		{name: "Warn", cfs: []log.Option{log.WithLevel(log.WARN)}},
+		{name: "Error", cfs: []log.Option{log.WithLevel(log.ERROR)}},
+		{name: "Fatal", cfs: []log.Option{log.WithLevel(log.FATAL)}},
+		{name: "TraceFilepath", cfs: []log.Option{log.WithLevel(log.TRACE), log.WithFilePath(true)}},
+		{name: "DebugFilepath", cfs: []log.Option{log.WithLevel(log.DEBUG), log.WithFilePath(true)}},
+		{name: "InfoFilepath", cfs: []log.Option{log.WithLevel(log.INFO), log.WithFilePath(true)}},
+		{name: "WarnFilepath", cfs: []log.Option{log.WithLevel(log.WARN), log.WithFilePath(true)}},
+		{name: "ErrorFilepath", cfs: []log.Option{log.WithLevel(log.ERROR), log.WithFilePath(true)}},
+		{name: "FatalFilepath", cfs: []log.Option{log.WithLevel(log.FATAL), log.WithFilePath(true)}},
 	}
 
 	baseLogger := log.NewLog(log.WithStdOut(ioutil.Discard), log.WithOutput(log.OutJson))
