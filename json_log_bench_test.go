@@ -4,13 +4,13 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/tryfix/log"
-	traceable_context "github.com/tryfix/traceable-context"
+	// traceable_context "github.com/tryfix/traceable-context"
 )
 
-var testCtx = traceable_context.WithUUID(uuid.New())
+// var testCtx = traceable_context.WithUUID(uuid.New())
 
 // BenchmarkZLBaseline is the simplest benchmark copied from zerolog.
 // This benchmark will setup the baseline for rest of the benchmarks in this file.

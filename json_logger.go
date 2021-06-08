@@ -8,6 +8,16 @@ type jsonLogger struct {
 	jsonLogParser
 }
 
+// newJsonLogger creates a new instance of json logger.
+func newJsonLogger(o *logOptions) Logger {
+	return &jsonLogger{
+		jsonLogParser: jsonLogParser{
+			logOptions: o,
+			log:        newZerolog(o),
+		},
+	}
+}
+
 // NewLog creates a new Logger instance using existing config from the Logger.
 //
 // Default configuration values can be overridden by providing Options to the function.
@@ -15,12 +25,7 @@ func (l *jsonLogger) NewLog(opts ...Option) Logger {
 	defaults := l.logOptions.copy()
 	defaults.apply(opts...)
 
-	return &jsonLogger{
-		jsonLogParser: jsonLogParser{
-			logOptions: defaults,
-			log:        newZerolog(defaults),
-		},
-	}
+	return newJsonLogger(defaults)
 }
 
 // NewPrefixedLog creates a new NewPrefixedLogger instance using existing config from the Logger.
@@ -30,12 +35,7 @@ func (l *jsonLogger) NewPrefixedLog(opts ...Option) PrefixedLogger {
 	defaults := l.logOptions.copy()
 	defaults.apply(opts...)
 
-	return &jsonPrefixedLogger{
-		jsonLogParser: jsonLogParser{
-			logOptions: defaults,
-			log:        newZerolog(defaults),
-		},
-	}
+	return newPrefixedJsonLogger(defaults)
 }
 
 // Error logs with ERROR level.

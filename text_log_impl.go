@@ -7,6 +7,12 @@ type textLogImpl struct {
 	log *log.Logger
 }
 
+func newTextLogImpl(opts *logOptions) Log {
+	return &textLogImpl{
+		logOptions: opts,
+		log:        log.New(opts.writer, ``, log.LstdFlags|log.Lmicroseconds),
+	}
+}
 func (l *textLogImpl) Log(options ...Option) Logger {
 	opts := l.logOptions.copy()
 	opts.apply(options...)
