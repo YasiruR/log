@@ -2,6 +2,9 @@ package log
 
 import (
 	"context"
+	"fmt"
+	"runtime"
+	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -36,6 +39,10 @@ func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix 
 	event = l.withExtractedTrace(ctx, event)
 	event = l.withExtractedCtx(ctx, event)
 	event = l.withParams(event, params...)
+	event = l.withCallerInfo(event)
+
+	// apply time format
+	event.Str(`time`, time.Now().Format("2006/01/02 15:04:05.000000"))
 
 	return event
 }
@@ -87,5 +94,32 @@ func (l *jsonLogParser) withParams(event *zerolog.Event, params ...interface{}) 
 		return event
 	}
 
-	return event.Interface("details", params)
+	return event.Interface("params", params)
+}
+
+// withCallerInfo adds caller info to the event.
+func (l *jsonLogParser) withCallerInfo(event *zerolog.Event) *zerolog.Event {
+	if !(l.funcPath || l.filePath) {
+		return event
+	}
+
+	funcName := "<Unknown>"
+	file := "<Unknown>"
+	line := 0
+	pc, f, ln, ok := runtime.Caller(l.skipFrameCount+1)
+	if ok {
+		funcName = runtime.FuncForPC(pc).Name()
+		file = f
+		line = ln
+	}
+
+	if l.funcPath {
+		event.Str("func", funcName)
+	}
+
+	if l.filePath{
+		event.Str("file", file + " line "+ fmt.Sprint(line))
+	}
+
+	return event
 }

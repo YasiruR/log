@@ -60,33 +60,16 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	format := "%s [%s] [%+v]"
 	logLevel := l.colored(level)
 
-	logMsg := &logMessage{
-		typ:     logLevel,
-		message: message,
-	}
-
 	// add extracted trace id
 	var traceID string
 	if l.ctxTraceExt != nil {
 		traceID = l.ctxTraceExt(ctx)
 	}
 
-	params = append(params, logLevel, traceID, fmt.Sprintf("%s", message))
+	params = append(params, logLevel, traceID, fmt.Sprintf("%v", message))
 
-	funcName := ""
-	file := "<Unknown>"
-	line := 1
-	pc, file, line, ok := runtime.Caller(l.fileDepth)
-	if ok {
-		funcName = runtime.FuncForPC(pc).Name()
-	}
-
-	format = "%s [%s] [%+v" + fmt.Sprintf(" on func %s", funcName) + "]"
-
-	if l.filePath {
-		logMsg.file = file
-		logMsg.line = line
-		format = "%s [%s] [%+v" + fmt.Sprintf(" on func %s on %s line %d", funcName, file, line) + "]"
+	if l.filePath || l.funcPath{
+		format = l.applyCallerInfo(format)
 	}
 
 	if len(prms) > 0 {
@@ -107,4 +90,29 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	l.log.Printf(format, params...)
+}
+
+func (l *logParser) applyCallerInfo(format string) string{
+	funcName := "<Unknown>"
+	file := "<Unknown>"
+	line := 0
+	pc, f, ln, ok := runtime.Caller(l.skipFrameCount+1)
+	if ok {
+		funcName = runtime.FuncForPC(pc).Name()
+	}
+
+	file = f
+	line = ln
+
+	// file and func format
+	var filePath, funcPath string
+	if l.funcPath{
+		funcPath = " on func " + funcName
+	}
+
+	if l.filePath {
+		filePath = " on " + file + " line "+ fmt.Sprint(line)
+	}
+
+	return "%s [%s] [%+v" + funcPath + filePath + "]"
 }

@@ -61,14 +61,5 @@ func zerologLevel(lvl Level) zerolog.Level {
 
 // newZerolog creates a new zerolog instance using given configs.
 func newZerolog(opts *logOptions) zerolog.Logger {
-	z := zerolog.New(opts.writer).
-		Level(zerologLevel(opts.logLevel)).
-		With().
-		Timestamp()
-
-	if opts.filePath {
-		z = z.CallerWithSkipFrameCount(opts.fileDepth)
-	}
-
-	return z.Logger()
+	return zerolog.New(opts.writer).Level(zerologLevel(opts.logLevel))
 }
