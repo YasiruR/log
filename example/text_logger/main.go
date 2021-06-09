@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tryfix/log"
-	traceable_context "github.com/tryfix/traceable-context"
+	traceableContext "github.com/tryfix/traceable-context"
 )
 
 func main() {
@@ -17,17 +17,38 @@ func main() {
 	log.Error(log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 
 	// log with a traceable context
-	tCtx := traceable_context.WithUUID(uuid.New())
-	ctx, _ := context.WithCancel(tCtx)
-	logger := log.Constructor.Log(log.WithColors(true), log.WithLevel(log.TRACE), log.WithFilePath(false), log.Prefixed(`level-1`))
+	tCtx := traceableContext.WithUUID(uuid.New())
+	ctx, fn := context.WithCancel(tCtx)
+	defer fn()
+	logger := log.Constructor.Log(
+		log.WithColors(true),
+		log.WithLevel(log.TRACE),
+		log.WithFilePath(false),
+		log.WithFuncPath(true),
+		log.Prefixed(`level-1`),
+		log.WithCtxTraceExtractor(func(ctx context.Context) string {
+			if trace := traceableContext.FromContext(ctx); trace != uuid.Nil {
+				return trace.String()
+			}
+
+			return ""
+		}))
 	logger.ErrorContext(ctx, `message`, `param1`, `param2`)
 	logger.ErrorContext(ctx, `message`)
 	logger.ErrorContext(ctx, `message`)
 	logger.ErrorContext(ctx, log.WithPrefix(`prefix`, `message`))
 	logger.WarnContext(ctx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 
+	// sub logger with traceable context
+	subLogger := logger.NewLog(log.Prefixed("sub-logger"))
+	subLogger.ErrorContext(ctx, "message", "with trace")
+	subLogger.ErrorContext(context.Background(), "message", "with empty trace")
+
 	// prefixed log
-	prefixedLogger := log.Constructor.PrefixedLog(log.WithLevel(log.ERROR), log.WithFilePath(true))
+	prefixedLogger := log.Constructor.PrefixedLog(
+		log.WithLevel(log.ERROR),
+		log.WithFuncPath(true),
+		log.WithFilePath(true))
 	prefixedLogger.Info(`module.sub-module`, `message`)
 	prefixedLogger.Trace(`module.sub-module`, `message`)
 	prefixedLogger.Error(`module.sub-module`, `message`)

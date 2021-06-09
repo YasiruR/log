@@ -1,8 +1,11 @@
 package log
 
-import "github.com/logrusorgru/aurora"
+import (
+	"github.com/logrusorgru/aurora"
+)
 
 type Level string
+type Output string
 
 const (
 	FATAL Level = `FATAL`
@@ -11,6 +14,11 @@ const (
 	INFO  Level = `INFO`
 	DEBUG Level = `DEBUG`
 	TRACE Level = `TRACE`
+)
+
+const (
+	OutText Output = `text`
+	OutJson Output = `json`
 )
 
 var logColors = map[Level]string{

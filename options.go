@@ -12,36 +12,43 @@ type Option func(*logOptions)
 
 // logOptions contains all the configuration options for the logger.
 type logOptions struct {
-	prefix    string
-	suffix    string
-	colors    bool
-	logLevel  Level
-	filePath  bool
-	fileDepth int
-	ctxExt    func(ctx context.Context) []interface{}
-	writer    io.Writer
+	prefix         string
+	suffix         string
+	colors         bool
+	logLevel       Level
+	filePath       bool
+	funcPath       bool
+	skipFrameCount int
+	writer         io.Writer
+	output         Output
+	ctxExt         func(ctx context.Context) []interface{}
+	ctxTraceExt    func(ctx context.Context) string
 }
 
 // applyDefault applies a set of predefined configurations to the logger.
 func (lOpts *logOptions) applyDefault() {
-	lOpts.fileDepth = 2
+	lOpts.skipFrameCount = 2
 	lOpts.colors = true
 	lOpts.logLevel = TRACE
-	lOpts.filePath = true
+	lOpts.filePath = false
+	lOpts.funcPath = false
 	lOpts.writer = os.Stdout
+	lOpts.output = OutText
 }
 
 // copy returns a copy of existing configuration values of the logger.
 func (lOpts *logOptions) copy() *logOptions {
 	return &logOptions{
-		prefix:    lOpts.prefix,
-		suffix:    lOpts.suffix,
-		fileDepth: lOpts.fileDepth,
-		colors:    lOpts.colors,
-		logLevel:  lOpts.logLevel,
-		filePath:  lOpts.filePath,
-		ctxExt:    lOpts.ctxExt,
-		writer:    lOpts.writer,
+		prefix:         lOpts.prefix,
+		suffix:         lOpts.suffix,
+		colors:         lOpts.colors,
+		logLevel:       lOpts.logLevel,
+		filePath:       lOpts.filePath,
+		funcPath:       lOpts.funcPath,
+		skipFrameCount: lOpts.skipFrameCount,
+		writer:         lOpts.writer,
+		ctxExt:         lOpts.ctxExt,
+		ctxTraceExt:    lOpts.ctxTraceExt,
 	}
 }
 
@@ -54,12 +61,12 @@ func (lOpts *logOptions) apply(options ...Option) {
 	}
 }
 
-// FileDepth
+// Deprecated: use WithSkipFrameCount instead.
 //
-// TODO: add description
+// FileDepth sets the frame count to skip when reading filepath, func path.
 func FileDepth(d int) Option {
 	return func(opts *logOptions) {
-		opts.fileDepth = d
+		opts.skipFrameCount = d
 	}
 }
 
@@ -70,10 +77,31 @@ func WithStdOut(w io.Writer) Option {
 	}
 }
 
+// WithSkipFrameCount sets the frame count to skip when reading filepath, func path.
+func WithSkipFrameCount(c int) Option {
+	return func(opts *logOptions) {
+		opts.skipFrameCount = c
+	}
+}
+
+// WithOutput sets the output format for log entries.
+func WithOutput(o Output) Option {
+	return func(opts *logOptions) {
+		opts.output = o
+	}
+}
+
 // WithFilePath sets whether the file path is logged or not.
 func WithFilePath(enabled bool) Option {
 	return func(opts *logOptions) {
 		opts.filePath = enabled
+	}
+}
+
+// WithFilePath sets whether the file path is logged or not.
+func WithFuncPath(enabled bool) Option {
+	return func(opts *logOptions) {
+		opts.funcPath = enabled
 	}
 }
 
@@ -98,7 +126,6 @@ func WithColors(enabled bool) Option {
 // WithLevel sets the log level.
 //
 // The log level is used to determine which types of logs are logged depending on the precedence of the log level.
-// TODO: need a clearer explanation
 func WithLevel(level Level) Option {
 	return func(opts *logOptions) {
 		opts.logLevel = level
@@ -116,5 +143,13 @@ func WithCtxExtractor(fn func(ctx context.Context) []interface{}) Option {
 
 			return fn(ctx)
 		}
+	}
+}
+
+// WithCtxTraceExtractor allows setting up of a function to extract trace from the context.
+// Default value func(_ context.Context) string{return ""}
+func WithCtxTraceExtractor(fn func(ctx context.Context) string) Option {
+	return func(opts *logOptions) {
+		opts.ctxTraceExt = fn
 	}
 }
