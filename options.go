@@ -108,7 +108,6 @@ func WithColors(enabled bool) Option {
 // WithLevel sets the log level.
 //
 // The log level is used to determine which types of logs are logged depending on the precedence of the log level.
-// TODO: need a clearer explanation
 func WithLevel(level Level) Option {
 	return func(opts *logOptions) {
 		opts.logLevel = level

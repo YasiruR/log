@@ -18,7 +18,8 @@ func NewLog(options ...Option) Log {
 	}
 }
 
-// Deprecated: Do not use with the json logger
+// Deprecated: Do not use with the json logger.
+//
 // WithPrefix appends the given prefix to the existing prefix.
 func WithPrefix(p string, message interface{}) string {
 	return fmt.Sprintf(`%s] [%+v`, p, message)

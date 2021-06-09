@@ -31,12 +31,16 @@ func main() {
 		log.WithFilePath(false),
 		log.Prefixed("level-1"),
 		log.WithCtxTraceExtractor(func(ctx context.Context) string {
-			return traceable_context.FromContext(ctx).String()
-		}),
-	)
+			if trace := traceable_context.FromContext(ctx); trace != uuid.Nil {
+				return trace.String()
+			}
+
+			return ""
+		}))
 	logger.ErrorContext(ctx, "message", "param1", "param2")
 	logger.ErrorContext(ctx, "message")
 	logger.WarnContext(ctx, "message", "param1", "param2")
+	logger.ErrorContext(context.Background(), "message", "with empty trace")
 
 	// prefixed log
 	prefixedLogger := constructor.PrefixedLog(log.WithLevel(log.ERROR), log.WithFilePath(true))

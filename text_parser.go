@@ -23,15 +23,15 @@ type logParser struct {
 
 // WithPrefix appends the given prefix to the existing prefix.
 func (l *logParser) WithPrefix(p string, message interface{}) string {
-	if l.prefix != `` {
-		if p == `` {
-			return fmt.Sprintf(`%s] [%+v`, l.prefix, message)
+	if l.prefix != "" {
+		if p == "" {
+			return fmt.Sprintf("%s] [%+v", l.prefix, message)
 		}
 
-		return fmt.Sprintf(`%s.%s] [%+v`, l.prefix, p, message)
+		return fmt.Sprintf("%s.%s] [%+v", l.prefix, p, message)
 	}
 
-	return fmt.Sprintf(`%s] [%+v`, p, message)
+	return fmt.Sprintf("%s] [%+v", p, message)
 }
 
 //isLoggable checks whether it is possible to log in the given level under current configurations.
@@ -57,7 +57,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	var params []interface{}
-	format := "%s [%+v]"
+	format := "%s [%s] [%+v]"
 	logLevel := l.colored(level)
 
 	logMsg := &logMessage{
@@ -65,22 +65,28 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 		message: message,
 	}
 
-	params = append(params, logLevel, fmt.Sprintf(`%s`, message))
+	// add extracted trace id
+	var traceID string
+	if l.ctxTraceExt != nil {
+		traceID = l.ctxTraceExt(ctx)
+	}
 
-	funcName := ``
-	file := `<Unknown>`
+	params = append(params, logLevel, traceID, fmt.Sprintf("%s", message))
+
+	funcName := ""
+	file := "<Unknown>"
 	line := 1
 	pc, file, line, ok := runtime.Caller(l.fileDepth)
 	if ok {
 		funcName = runtime.FuncForPC(pc).Name()
 	}
 
-	format = "%s [%+v" + fmt.Sprintf(` on func %s`, funcName) + "]"
+	format = "%s [%s] [%+v" + fmt.Sprintf(" on func %s", funcName) + "]"
 
 	if l.filePath {
 		logMsg.file = file
 		logMsg.line = line
-		format = "%s [%+v" + fmt.Sprintf(` on func %s on %s line %d`, funcName, file, line) + "]"
+		format = "%s [%s] [%+v" + fmt.Sprintf(" on func %s on %s line %d", funcName, file, line) + "]"
 	}
 
 	if len(prms) > 0 {
@@ -88,7 +94,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 		params = append(params, prms)
 	}
 
-	// add context details
+	// add extracted context details
 	if l.ctxExt != nil {
 		if ctxData := l.ctxExt(ctx); len(ctxData) > 0 {
 			format += " %v"

@@ -20,7 +20,14 @@ func main() {
 	tCtx := traceable_context.WithUUID(uuid.New())
 	ctx, fn := context.WithCancel(tCtx)
 	defer fn()
-	logger := log.Constructor.Log(log.WithColors(true), log.WithLevel(log.TRACE), log.WithFilePath(false), log.Prefixed(`level-1`))
+	logger := log.Constructor.Log(
+		log.WithColors(true),
+		log.WithLevel(log.TRACE),
+		log.WithFilePath(false),
+		log.Prefixed(`level-1`),
+		log.WithCtxTraceExtractor(func(ctx context.Context) string {
+			return traceable_context.FromContext(ctx).String()
+		}))
 	logger.ErrorContext(ctx, `message`, `param1`, `param2`)
 	logger.ErrorContext(ctx, `message`)
 	logger.ErrorContext(ctx, `message`)

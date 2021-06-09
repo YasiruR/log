@@ -62,7 +62,9 @@ func (l *jsonLogParser) withPrefix(event *zerolog.Event, prefix string) *zerolog
 // withExtractedTrace adds the extacted trace value to the event.
 func (l *jsonLogParser) withExtractedTrace(ctx context.Context, event *zerolog.Event) *zerolog.Event {
 	if l.ctxTraceExt != nil {
-		return event.Str("trace", l.ctxTraceExt(ctx))
+		if trace := l.ctxTraceExt(ctx); trace != "" {
+			return event.Str("trace", trace)
+		}
 	}
 
 	return event
