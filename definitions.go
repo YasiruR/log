@@ -1,12 +1,7 @@
 package log
 
 import (
-	"context"
-	"fmt"
-
-	"github.com/google/uuid"
 	"github.com/logrusorgru/aurora"
-	tCtx "github.com/tryfix/traceable-context"
 )
 
 type Level string
@@ -42,17 +37,4 @@ var logTypes = map[Level]int{
 	INFO:  3,
 	DEBUG: 4,
 	TRACE: 5,
-}
-
-// ExtractUUIDFunc is the default context uuid extraction function.
-var ExtractUUIDFunc = func(ctx context.Context) []interface{} {
-	key := "uuid"
-	uid := tCtx.FromContext(ctx)
-	if uid == uuid.Nil {
-		uid = uuid.New()
-	}
-
-	return []interface{}{
-		fmt.Sprintf("%s: %s", key, uid),
-	}
 }

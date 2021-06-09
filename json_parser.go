@@ -33,6 +33,7 @@ func (l *jsonLogParser) printf(format string, v ...interface{}) {
 // parse parses all additional data.
 func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix string, params ...interface{}) *zerolog.Event {
 	event = l.withPrefix(event, prefix)
+	event = l.withExtractedTrace(ctx, event)
 	event = l.withExtractedCtx(ctx, event)
 	event = l.withParams(event, params...)
 
@@ -53,6 +54,15 @@ func (l *jsonLogParser) withPrefix(event *zerolog.Event, prefix string) *zerolog
 
 	if prefix != "" {
 		return event.Str(key, prefix)
+	}
+
+	return event
+}
+
+// withExtractedTrace adds the extacted trace value to the event.
+func (l *jsonLogParser) withExtractedTrace(ctx context.Context, event *zerolog.Event) *zerolog.Event {
+	if l.ctxTraceExt != nil {
+		return event.Str("trace", l.ctxTraceExt(ctx))
 	}
 
 	return event

@@ -12,15 +12,16 @@ type Option func(*logOptions)
 
 // logOptions contains all the configuration options for the logger.
 type logOptions struct {
-	prefix    string
-	suffix    string
-	colors    bool
-	logLevel  Level
-	filePath  bool
-	fileDepth int
-	ctxExt    func(ctx context.Context) []interface{}
-	writer    io.Writer
-	output    Output
+	prefix      string
+	suffix      string
+	colors      bool
+	logLevel    Level
+	filePath    bool
+	fileDepth   int
+	writer      io.Writer
+	output      Output
+	ctxExt      func(ctx context.Context) []interface{}
+	ctxTraceExt func(ctx context.Context) string
 }
 
 // applyDefault applies a set of predefined configurations to the logger.
@@ -125,5 +126,13 @@ func WithCtxExtractor(fn func(ctx context.Context) []interface{}) Option {
 
 			return fn(ctx)
 		}
+	}
+}
+
+// WithCtxTraceExtractor allows setting up of a function to extract trace from the context.
+// Default value func(_ context.Context) string{return ""}
+func WithCtxTraceExtractor(fn func(ctx context.Context) string) Option {
+	return func(opts *logOptions) {
+		opts.ctxTraceExt = fn
 	}
 }
