@@ -73,17 +73,10 @@ func BenchmarkJsonLoggers(b *testing.B) {
 		{name: "Warn", cfs: []log.Option{log.WithLevel(log.WARN)}},
 		{name: "Error", cfs: []log.Option{log.WithLevel(log.ERROR)}},
 
-		{name: "TracePrefixed", cfs: []log.Option{log.WithLevel(log.TRACE), log.Prefixed("prefix")}},
-		{name: "DebugPrefixed", cfs: []log.Option{log.WithLevel(log.DEBUG), log.Prefixed("prefix")}},
-		{name: "InfoPrefixed", cfs: []log.Option{log.WithLevel(log.INFO), log.Prefixed("prefix")}},
-		{name: "WarnPrefixed", cfs: []log.Option{log.WithLevel(log.WARN), log.Prefixed("prefix")}},
 		{name: "ErrorPrefixed", cfs: []log.Option{log.WithLevel(log.ERROR), log.Prefixed("prefix")}},
-
-		{name: "TraceFilepath", cfs: []log.Option{log.WithLevel(log.TRACE), log.WithFilePath(true)}},
-		{name: "DebugFilepath", cfs: []log.Option{log.WithLevel(log.DEBUG), log.WithFilePath(true)}},
-		{name: "InfoFilepath", cfs: []log.Option{log.WithLevel(log.INFO), log.WithFilePath(true)}},
-		{name: "WarnFilepath", cfs: []log.Option{log.WithLevel(log.WARN), log.WithFilePath(true)}},
 		{name: "ErrorFilepath", cfs: []log.Option{log.WithLevel(log.ERROR), log.WithFilePath(true)}},
+		{name: "ErrorFuncPath", cfs: []log.Option{log.WithLevel(log.ERROR), log.WithFuncPath(true)}},
+		{name: "ErrorFilePathFuncPath", cfs: []log.Option{log.WithLevel(log.ERROR), log.WithFilePath(true), log.WithFuncPath(true)}},
 	}
 
 	baseLogger := log.NewLog(log.WithStdOut(ioutil.Discard), log.WithOutput(log.OutJson), log.WithColors(false))

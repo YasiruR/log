@@ -41,14 +41,14 @@ func (lOpts *logOptions) copy() *logOptions {
 	return &logOptions{
 		prefix:         lOpts.prefix,
 		suffix:         lOpts.suffix,
-		skipFrameCount: lOpts.skipFrameCount,
 		colors:         lOpts.colors,
 		logLevel:       lOpts.logLevel,
 		filePath:       lOpts.filePath,
 		funcPath:       lOpts.funcPath,
-		ctxExt:         lOpts.ctxExt,
+		skipFrameCount: lOpts.skipFrameCount,
 		writer:         lOpts.writer,
-		//ctxTraceExt: lOpts.ctxTraceExt,
+		ctxExt:         lOpts.ctxExt,
+		ctxTraceExt:    lOpts.ctxTraceExt,
 	}
 }
 
@@ -62,6 +62,7 @@ func (lOpts *logOptions) apply(options ...Option) {
 }
 
 // Deprecated: use WithSkipFrameCount instead.
+//
 // FileDepth sets the frame count to skip when reading filepath, func path.
 func FileDepth(d int) Option {
 	return func(opts *logOptions) {

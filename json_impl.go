@@ -61,5 +61,9 @@ func zerologLevel(lvl Level) zerolog.Level {
 
 // newZerolog creates a new zerolog instance using given configs.
 func newZerolog(opts *logOptions) zerolog.Logger {
-	return zerolog.New(opts.writer).Level(zerologLevel(opts.logLevel))
+	// set time format
+	zerolog.TimeFieldFormat = "2006/01/02 15:04:05.000000"
+
+	return zerolog.New(opts.writer).Level(zerologLevel(opts.logLevel)).
+		With().Timestamp().Logger()
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"runtime"
-	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -40,9 +39,6 @@ func (l *jsonLogParser) parse(ctx context.Context, event *zerolog.Event, prefix 
 	event = l.withExtractedCtx(ctx, event)
 	event = l.withParams(event, params...)
 	event = l.withCallerInfo(event)
-
-	// apply time format
-	event.Str(`time`, time.Now().Format("2006/01/02 15:04:05.000000"))
 
 	return event
 }
@@ -106,7 +102,7 @@ func (l *jsonLogParser) withCallerInfo(event *zerolog.Event) *zerolog.Event {
 	funcName := "<Unknown>"
 	file := "<Unknown>"
 	line := 0
-	pc, f, ln, ok := runtime.Caller(l.skipFrameCount+1)
+	pc, f, ln, ok := runtime.Caller(l.skipFrameCount + 1)
 	if ok {
 		funcName = runtime.FuncForPC(pc).Name()
 		file = f
@@ -117,8 +113,8 @@ func (l *jsonLogParser) withCallerInfo(event *zerolog.Event) *zerolog.Event {
 		event.Str("func", funcName)
 	}
 
-	if l.filePath{
-		event.Str("file", file + " line "+ fmt.Sprint(line))
+	if l.filePath {
+		event.Str("file", file+" line "+fmt.Sprint(line))
 	}
 
 	return event

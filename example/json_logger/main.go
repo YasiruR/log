@@ -42,6 +42,11 @@ func main() {
 	logger.WarnContext(ctx, "message", "param1", "param2")
 	logger.ErrorContext(context.Background(), "message", "with empty trace")
 
+	// sub logger with traceable context
+	subLogger := logger.NewLog(log.Prefixed("sub-logger"))
+	subLogger.ErrorContext(ctx, "message", "with trace")
+	subLogger.ErrorContext(context.Background(), "message", "with empty trace")
+
 	// prefixed log
 	prefixedLogger := constructor.PrefixedLog(log.WithLevel(log.ERROR), log.WithFilePath(true))
 	prefixedLogger.Info("module.sub-module", "message")

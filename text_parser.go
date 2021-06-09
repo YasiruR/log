@@ -7,14 +7,6 @@ import (
 	"runtime"
 )
 
-// logMessage represents the overall message being logged.
-type logMessage struct {
-	typ     string
-	message interface{}
-	file    string
-	line    int
-}
-
 // logParser contains parsing logic for a logger.
 type logParser struct {
 	*logOptions
@@ -68,7 +60,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 
 	params = append(params, logLevel, traceID, fmt.Sprintf("%v", message))
 
-	if l.filePath || l.funcPath{
+	if l.filePath || l.funcPath {
 		format = l.applyCallerInfo(format)
 	}
 
@@ -92,11 +84,11 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	l.log.Printf(format, params...)
 }
 
-func (l *logParser) applyCallerInfo(format string) string{
+func (l *logParser) applyCallerInfo(format string) string {
 	funcName := "<Unknown>"
 	file := "<Unknown>"
 	line := 0
-	pc, f, ln, ok := runtime.Caller(l.skipFrameCount+1)
+	pc, f, ln, ok := runtime.Caller(l.skipFrameCount + 1)
 	if ok {
 		funcName = runtime.FuncForPC(pc).Name()
 	}
@@ -106,12 +98,12 @@ func (l *logParser) applyCallerInfo(format string) string{
 
 	// file and func format
 	var filePath, funcPath string
-	if l.funcPath{
+	if l.funcPath {
 		funcPath = " on func " + funcName
 	}
 
 	if l.filePath {
-		filePath = " on " + file + " line "+ fmt.Sprint(line)
+		filePath = " on " + file + " line " + fmt.Sprint(line)
 	}
 
 	return "%s [%s] [%+v" + funcPath + filePath + "]"

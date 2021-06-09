@@ -27,13 +27,22 @@ func main() {
 		log.WithFuncPath(true),
 		log.Prefixed(`level-1`),
 		log.WithCtxTraceExtractor(func(ctx context.Context) string {
-			return traceableContext.FromContext(ctx).String()
+			if trace := traceableContext.FromContext(ctx); trace != uuid.Nil {
+				return trace.String()
+			}
+
+			return ""
 		}))
 	logger.ErrorContext(ctx, `message`, `param1`, `param2`)
 	logger.ErrorContext(ctx, `message`)
 	logger.ErrorContext(ctx, `message`)
 	logger.ErrorContext(ctx, log.WithPrefix(`prefix`, `message`))
 	logger.WarnContext(ctx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
+
+	// sub logger with traceable context
+	subLogger := logger.NewLog(log.Prefixed("sub-logger"))
+	subLogger.ErrorContext(ctx, "message", "with trace")
+	subLogger.ErrorContext(context.Background(), "message", "with empty trace")
 
 	// prefixed log
 	prefixedLogger := log.Constructor.PrefixedLog(
