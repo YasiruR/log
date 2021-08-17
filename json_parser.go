@@ -90,7 +90,12 @@ func (l *jsonLogParser) withParams(event *zerolog.Event, params ...interface{}) 
 		return event
 	}
 
-	return event.Interface("params", params)
+	arr := zerolog.Arr()
+	for _, param := range params {
+		arr.Str(fmt.Sprintf("%+v", param))
+	}
+
+	return event.Array("params", arr)
 }
 
 // withCallerInfo adds caller info to the event.

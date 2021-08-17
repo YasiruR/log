@@ -39,6 +39,17 @@ func main() {
 	logger.ErrorContext(ctx, log.WithPrefix(`prefix`, `message`))
 	logger.WarnContext(ctx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
 
+	type WrappedError struct {
+		error
+	}
+
+	errWrapped := WrappedError{
+		fmt.Errorf(`wrapped error: %s`, `inner error`),
+	}
+
+	logger.Error("error", errWrapped)
+	logger.ErrorContext(context.Background(), "contexed-error", errWrapped)
+
 	// sub logger with traceable context
 	subLogger := logger.NewLog(log.Prefixed("sub-logger"))
 	subLogger.ErrorContext(ctx, "message", "with trace")

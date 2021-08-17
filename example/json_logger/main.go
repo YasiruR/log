@@ -22,6 +22,32 @@ func main() {
 	lg.Error("message")
 	lg.Error("message", "param1", "param2")
 
+	// log complex structures
+	type ABC struct {
+		CDE string
+		def string
+	}
+	cpx := ABC{CDE: "some string", def: "some unexported string"}
+
+	lg.Trace("log complex", "param1", cpx)
+	lg.TraceContext(context.Background(), "log complex", "param1", cpx)
+
+	// log error values
+	err := fmt.Errorf("error: %s", "plain error")
+	lg.Error("error", err)
+
+	// log embedded errors
+	type WrappedError struct {
+		error
+	}
+
+	errWrapped := WrappedError{
+		fmt.Errorf("inner error"),
+	}
+
+	lg.Error("wrapped error", errWrapped)
+	lg.ErrorContext(context.Background(), "contexed-error", errWrapped)
+
 	// log with a traceable context
 	tCtx := traceable_context.WithUUID(uuid.New())
 	ctx, fn := context.WithCancel(tCtx)
