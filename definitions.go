@@ -22,12 +22,12 @@ const (
 )
 
 var logColors = map[Level]string{
-	FATAL: aurora.BgRed(`[FATAL]`).String(),
-	ERROR: aurora.BgRed(`[ERROR]`).String(),
-	WARN:  aurora.BgYellow(`[ WARN]`).String(),
-	INFO:  aurora.BgBlue(`[ INFO]`).String(),
-	DEBUG: aurora.BgCyan(`[DEBUG]`).String(),
-	TRACE: aurora.BgMagenta(`[TRACE]`).String(),
+	FATAL: aurora.Red(`FATAL`).String(),
+	ERROR: aurora.Red(`ERROR`).String(),
+	WARN:  aurora.Yellow(`WARN `).String(),
+	INFO:  aurora.Blue(`INFO `).String(),
+	DEBUG: aurora.Cyan(`DEBUG`).String(),
+	TRACE: aurora.Magenta(`TRACE`).String(),
 }
 
 var logTypes = map[Level]int{

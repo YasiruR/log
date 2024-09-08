@@ -118,4 +118,6 @@ func main() {
 	ctxChildLogger.ErrorContext(lCtx, `message`)
 	ctxChildLogger.ErrorContext(lCtx, log.WithPrefix(`prefix`, `message`))
 	ctxChildLogger.WarnContext(lCtx, log.WithPrefix(`prefix`, `message`), `param1`, `param2`)
+	ctxChildLogger.Println(`param1`, `param2`)
+	ctxChildLogger.Print(`param1`, `param2`)
 }
