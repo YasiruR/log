@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora/v4"
 )
 
 type Level string
