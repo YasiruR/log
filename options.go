@@ -49,6 +49,7 @@ func (lOpts *logOptions) copy() *logOptions {
 		skipFrameCount: lOpts.skipFrameCount,
 		writer:         lOpts.writer,
 		ctxExt:         lOpts.ctxExt,
+		ctxMapExt:      lOpts.ctxMapExt,
 		ctxTraceExt:    lOpts.ctxTraceExt,
 	}
 }
