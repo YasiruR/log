@@ -75,11 +75,12 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 			format += " %v"
 			params = append(params, ctxData)
 		}
-		if l.ctxMapExt != nil {
-			if ctxData := l.ctxMapExt(ctx); len(ctxData) > 0 {
-				format += " %v"
-				params = append(params, ctxData)
-			}
+	}
+
+	if l.ctxMapExt != nil {
+		if ctxData := l.ctxMapExt(ctx); len(ctxData) > 0 {
+			format += " %v"
+			params = append(params, ctxData)
 		}
 	}
 
