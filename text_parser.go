@@ -65,7 +65,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	if l.filePath || l.funcPath {
-		format += l.appendCallerInfo(format)
+		format += l.callerInfoSuffix()
 	} else {
 		format += "]"
 	}
@@ -97,7 +97,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	l.log.Printf(format, params...)
 }
 
-func (l *logParser) appendCallerInfo(format string) string {
+func (l *logParser) callerInfoSuffix() string {
 	funcName := "<Unknown>"
 	file := "<Unknown>"
 	line := 0
