@@ -1,0 +1,35 @@
+goos: linux,,,,,,,
+goarch: amd64,,,,,,,
+cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz,,,,,,,
+BenchmarkGoNative-8,1000000000,1.151 ns/op,1.151,,,,
+BenchmarkTextLogInfo-8,8191448,143.4 ns/op,143.4,,,,
+BenchmarkTextLogInfoFilePath-8,2991020,405.3 ns/op,405.3,,,,
+BenchmarkTextInfoContext-8,8291408,149.0 ns/op,149.0,,,,
+BenchmarkTextInfoContextExt-8,5426329,224.0 ns/op,224.0,,,,
+BenchmarkTextInfoParams-8,5557789,283.8 ns/op,283.8,,,,
+PASS,,,,,,,
+ok,command-line-arguments,8.836s,,,,,
+,,,,,,,
+goos: linux,,,,,Average values (3 attempts),,
+goarch: amd64,,,,,,,
+cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz,,,,,,iterations,ns/op
+BenchmarkGoNative-8,1000000000,1.160 ns/op,1.160,,BenchmarkGoNative-8,1000000000,1.158333333
+BenchmarkTextLogInfo-8,6961292,143.7 ns/op,143.7,,BenchmarkTextLogInfo-8,7841773.333,162.9666667
+BenchmarkTextLogInfoFilePath-8,2947794,602.8 ns/op,602.8,,BenchmarkTextLogInfoFilePath-8,2571607.333,550.8666667
+BenchmarkTextInfoContext-8,4427673,253.3 ns/op,253.3,,BenchmarkTextInfoContext-8,6012530,210.5
+BenchmarkTextInfoContextExt-8,3153180,351.1 ns/op,351.1,,BenchmarkTextInfoContextExt-8,4032477.667,307.5
+BenchmarkTextInfoParams-8,3558786,353.8 ns/op,353.8,,BenchmarkTextInfoParams-8,4251777,325.9
+PASS,,,,,,,
+ok,command-line-arguments,9.143s,,,Total (s),27.525,
+,,,,,,,
+goos: linux,,,,,,,
+goarch: amd64,,,,,,,
+cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz,,,,,,,
+BenchmarkGoNative-8,1000000000,1.164 ns/op,1.164,,,,
+BenchmarkTextLogInfo-8,8372580,201.8 ns/op,201.8,,,,
+BenchmarkTextLogInfoFilePath-8,1776008,644.5 ns/op,644.5,,,,
+BenchmarkTextInfoContext-8,5318509,229.2 ns/op,229.2,,,,
+BenchmarkTextInfoContextExt-8,3517924,347.4 ns/op,347.4,,,,
+BenchmarkTextInfoParams-8,3638756,340.1 ns/op,340.1,,,,
+PASS,,,,,,,
+ok,command-line-arguments,9.546s,,,,,

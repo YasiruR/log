@@ -17,20 +17,15 @@ type logParser struct {
 func (l *logParser) WithPrefix(p string, message interface{}) string {
 	if l.prefix != "" {
 		if p == "" {
-			//fmt.Println("EXECUTED 0")
 			return fmt.Sprintf("%s] [%+v", l.prefix, message)
 		}
-
-		//fmt.Println("EXECUTED 1")
 		return fmt.Sprintf("%s.%s] [%+v", l.prefix, p, message)
 	}
 
 	if p == "" {
-		//fmt.Println("EXECUTED 2")
 		return fmt.Sprintf("%+v", message)
 	}
 
-	//fmt.Println("EXECUTED 3")
 	return fmt.Sprintf("%s] [%+v", p, message)
 }
 
