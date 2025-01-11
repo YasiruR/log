@@ -57,9 +57,10 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 
 	// add extracted trace id
 	if l.ctxTraceExt != nil {
-		if l.ctxTraceExt(ctx) != "" {
+		traceId := l.ctxTraceExt(ctx)
+		if traceId != "" {
 			format += "] [%+v"
-			params = []interface{}{logLevel, l.ctxTraceExt(ctx), fmt.Sprintf("%v", message)}
+			params = []interface{}{logLevel, traceId, fmt.Sprintf("%v", message)}
 		}
 	}
 
