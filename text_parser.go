@@ -51,22 +51,23 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 		return
 	}
 
-	var params []interface{}
 	logLevel := l.colored(level)
+	format := "%s [%s"
+	params := []interface{}{logLevel, fmt.Sprintf("%v", message)}
 
 	// add extracted trace id
-	var format, traceID string
 	if l.ctxTraceExt != nil {
-		format = "%s [%s] [%+v]"
-		traceID = l.ctxTraceExt(ctx)
-		params = append(params, logLevel, traceID, fmt.Sprintf("%v", message))
-	} else {
-		format = "%s [%s]"
-		params = append(params, logLevel, fmt.Sprintf("%v", message))
+		traceId := l.ctxTraceExt(ctx)
+		if traceId != "" {
+			format += "] [%+v"
+			params = []interface{}{logLevel, traceId, fmt.Sprintf("%v", message)}
+		}
 	}
 
 	if l.filePath || l.funcPath {
-		format = l.applyCallerInfo(format)
+		format += l.appendCallerInfo(format)
+	} else {
+		format += "]"
 	}
 
 	if len(prms) > 0 {
@@ -96,7 +97,7 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	l.log.Printf(format, params...)
 }
 
-func (l *logParser) applyCallerInfo(format string) string {
+func (l *logParser) appendCallerInfo(format string) string {
 	funcName := "<Unknown>"
 	file := "<Unknown>"
 	line := 0
@@ -118,5 +119,5 @@ func (l *logParser) applyCallerInfo(format string) string {
 		filePath = " on " + file + " line " + fmt.Sprint(line)
 	}
 
-	return "%s [%s] [%+v" + funcPath + filePath + "]"
+	return funcPath + filePath + "]"
 }
