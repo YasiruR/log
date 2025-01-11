@@ -6,7 +6,7 @@ import (
 	nativeLog "log"
 	"testing"
 
-	"github.com/tryfix/log"
+	"github.com/YasiruR/log"
 )
 
 const testLog = `test log entry, test log entry, test log entry, test log entry, test log entry`

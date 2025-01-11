@@ -17,12 +17,20 @@ type logParser struct {
 func (l *logParser) WithPrefix(p string, message interface{}) string {
 	if l.prefix != "" {
 		if p == "" {
+			//fmt.Println("EXECUTED 0")
 			return fmt.Sprintf("%s] [%+v", l.prefix, message)
 		}
 
+		//fmt.Println("EXECUTED 1")
 		return fmt.Sprintf("%s.%s] [%+v", l.prefix, p, message)
 	}
 
+	if p == "" {
+		//fmt.Println("EXECUTED 2")
+		return fmt.Sprintf("%+v", message)
+	}
+
+	//fmt.Println("EXECUTED 3")
 	return fmt.Sprintf("%s] [%+v", p, message)
 }
 
@@ -49,16 +57,18 @@ func (l *logParser) logEntry(ctx context.Context, level Level, message interface
 	}
 
 	var params []interface{}
-	format := "%s [%s] [%+v]"
 	logLevel := l.colored(level)
 
 	// add extracted trace id
-	var traceID string
+	var format, traceID string
 	if l.ctxTraceExt != nil {
+		format = "%s [%s] [%+v]"
 		traceID = l.ctxTraceExt(ctx)
+		params = append(params, logLevel, traceID, fmt.Sprintf("%v", message))
+	} else {
+		format = "%s [%s]"
+		params = append(params, logLevel, fmt.Sprintf("%v", message))
 	}
-
-	params = append(params, logLevel, traceID, fmt.Sprintf("%v", message))
 
 	if l.filePath || l.funcPath {
 		format = l.applyCallerInfo(format)

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/YasiruR/log"
 	"github.com/google/uuid"
-	"github.com/tryfix/log"
 	traceableContext "github.com/tryfix/traceable-context"
 )
 
