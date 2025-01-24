@@ -1,4 +1,4 @@
-module github.com/tryfix/log
+module github.com/YasiruR/log
 
 go 1.14
 
